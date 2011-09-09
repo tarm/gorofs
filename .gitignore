@@ -1,0 +1,8 @@
+*.8
+*.o
+_obj
+_cgo*
+*.cgo1.*
+*.cgo2.*
+chatter
+version.go
