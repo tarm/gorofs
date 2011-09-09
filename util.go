@@ -27,10 +27,24 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	_, err = fmt.Fprintf(out, `package %s
+	fmt.Fprintf(out, `package %s
 
-const %s = %q
-`, *pkgName, *varName, buf)
+var %s []byte
+
+func init() {
+	%s = []byte{`, *pkgName, *varName, *varName)
+	for i, b := range buf {
+		if i % 8 == 0 {
+			if i == 0 {
+				fmt.Fprintf(out, "0x%02x", b)
+			} else {
+				fmt.Fprintf(out, ",\n\t0x%02x", b)
+			}
+		} else {
+			fmt.Fprintf(out, ", 0x%02x", b)
+		}
+	}
+	fmt.Fprintf(out, "}\n}\n")
 	if err != nil {
 		log.Fatal(err)
 	}
