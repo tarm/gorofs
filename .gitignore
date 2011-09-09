@@ -4,5 +4,5 @@ _obj
 _cgo*
 *.cgo1.*
 *.cgo2.*
-chatter
-version.go
+rofs.go
+src.zip

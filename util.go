@@ -1,6 +1,7 @@
 package main
 
 import (
+	"archive/zip"
 	"flag"
 	"fmt"
 	"io/ioutil"
@@ -8,12 +9,33 @@ import (
 	"os"
 )
 
+func testFile(name string) (err os.Error) {
+	f, err := os.Open(name)
+	if err != nil {
+		return
+	}
+	fi, err := f.Stat()
+	if err != nil {
+		return
+	}
+	r, err := zip.NewReader(f, fi.Size)
+	fmt.Println(fi.Size)
+	for _, f := range r.File {
+		fmt.Println(f.FileHeader.Name)
+	}
+	return
+}
+
 func main() {
 	pkgName := flag.String("pkg", "main", "package name")
 	varName := flag.String("var", "rofs", "variable name")
 	outName := flag.String("out", "rofs.go", "file name")
 	srcName := flag.String("src", "src.zip", "Src zip file")
 	flag.Parse()
+	err := testFile(*srcName)
+	if err != nil {
+		log.Fatal(err)
+	}
 	src, err := os.Open(*srcName)
 	if err != nil {
 		log.Fatal(err)
