@@ -22,6 +22,19 @@ func (r *raw) ReadAt(b []byte, off int64) (n int, err os.Error) {
 	return
 }
 
+type file struct {
+	io.ReadCloser
+	zf *zip.File
+}
+
+func (f *file)Stat() (fi *os.FileInfo, err os.Error) {
+	fi = new(os.FileInfo)
+	fi.Mtime_ns = f.zf.Mtime_ns()
+	fi.Name = f.zf.Name
+	fi.Size = int64(f.zf.UncompressedSize)
+	return
+}
+
 var defaultFs *Rofs
 
 func Register(buf []byte) (err os.Error) {
@@ -33,7 +46,7 @@ func Register(buf []byte) (err os.Error) {
 	return
 }
 
-func Open(name string) (f io.ReadCloser, err os.Error) {
+func Open(name string) (ReadStatCloser, os.Error) {
 	return defaultFs.Open(name)
 }
 
@@ -51,7 +64,7 @@ func NewROFS(buf []byte) (fs *Rofs, err os.Error) {
 	return
 }
 
-func (fs *Rofs) Open(name string) (f io.ReadCloser, err os.Error) {
+func (fs *Rofs) Open(name string) (f ReadStatCloser, err os.Error) {
 	f, err = os.Open(name)
 	if err == nil {
 		return
@@ -59,10 +72,20 @@ func (fs *Rofs) Open(name string) (f io.ReadCloser, err os.Error) {
 	if fs == nil {
 		return nil, fmt.Errorf("No fs registered")
 	}
-	for _, f := range fs.reader.File {
-		if f.Name == name {
-			return f.Open()
+	for _, fz := range fs.reader.File {
+		if fz.Name == name {
+			fi, err := fz.Open()
+			if err != nil {
+				continue
+			}
+			f = &file{fi, fz}
+			return f, nil
 		}
 	}
 	return nil, fmt.Errorf("File not found")
+}
+
+type ReadStatCloser interface {
+	io.ReadCloser
+	Stat() (*os.FileInfo, os.Error)
 }
