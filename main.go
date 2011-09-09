@@ -27,7 +27,7 @@ type file struct {
 	zf *zip.File
 }
 
-func (f *file)Stat() (fi *os.FileInfo, err os.Error) {
+func (f *file) Stat() (fi *os.FileInfo, err os.Error) {
 	fi = new(os.FileInfo)
 	fi.Mtime_ns = f.zf.Mtime_ns()
 	fi.Name = f.zf.Name

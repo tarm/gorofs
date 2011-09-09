@@ -56,7 +56,7 @@ var %s []byte
 func init() {
 	%s = []byte{`, *pkgName, *varName, *varName)
 	for i, b := range buf {
-		if i % 8 == 0 {
+		if i%8 == 0 {
 			if i == 0 {
 				fmt.Fprintf(out, "0x%02x", b)
 			} else {
