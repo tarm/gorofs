@@ -51,10 +51,7 @@ func main() {
 	}
 	fmt.Fprintf(out, `package %s
 
-var %s []byte
-
-func init() {
-	%s = []byte{`, *pkgName, *varName, *varName)
+var %s = [...]byte{`, *pkgName, *varName)
 	for i, b := range buf {
 		if i%8 == 0 {
 			if i == 0 {
@@ -66,7 +63,7 @@ func init() {
 			fmt.Fprintf(out, ", 0x%02x", b)
 		}
 	}
-	fmt.Fprintf(out, "}\n}\n")
+	fmt.Fprintf(out, "}\n")
 	if err != nil {
 		log.Fatal(err)
 	}
