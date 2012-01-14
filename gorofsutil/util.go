@@ -9,7 +9,7 @@ import (
 	"os"
 )
 
-func testFile(name string) (err os.Error) {
+func testFile(name string) (err error) {
 	f, err := os.Open(name)
 	if err != nil {
 		return
