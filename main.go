@@ -37,7 +37,7 @@ func (f *file) ModTime() time.Time {
 }
 
 func (f *file) Mode() os.FileMode {
-	m, _ := f.zf.FileHeader.Mode()
+	m := f.zf.FileHeader.Mode()
 	return m
 }
 
@@ -51,6 +51,11 @@ func (f *file) Size() int64 {
 
 func (f *file) Stat() (fi os.FileInfo, err error) {
 	return f, nil
+}
+
+
+func (f *file) Sys() (interface{}) {
+	return f
 }
 
 var defaultFs *Rofs
